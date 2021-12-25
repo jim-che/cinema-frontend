@@ -156,13 +156,37 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="影院编号" prop="cinemaId">
-          <el-input v-model="form.cinemaId" placeholder="请输入影院编号" />
+          <el-select v-model="form.cinemaId" placeholder="请选择影院编号">
+            <el-option
+              v-for="item in this.cinemaIds"
+              :key="item"
+              :label="item"
+              :value="item"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="影厅编号" prop="hallId">
-          <el-input v-model="form.hallId" placeholder="请输入影厅编号" />
+          <el-select v-model="form.hallId" placeholder="请输入影厅编号">
+            <el-option
+              v-for="item in this.hallIds"
+              :key="item"
+              :label="item"
+              :value="item"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="影片编号" prop="movieId">
-          <el-input v-model="form.movieId" placeholder="请输入影片编号" />
+          <el-select v-model="form.movieId" placeholder="请输入影片编号">
+            <el-option
+              v-for="item in this.movieIds"
+              :key="item"
+              :label="item"
+              :value="item"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="语言" prop="language">
           <el-select v-model="form.language" placeholder="请选择语言">
@@ -204,13 +228,16 @@
 </template>
 
 <script>
-import { listManage, getManage, delManage, addManage, updateManage } from "@/api/session/manage";
+import { listManage, listManage2, getManage, delManage, addManage, updateManage } from "@/api/session/manage";
 
 export default {
   name: "Manage",
   dicts: ['language'],
   data() {
     return {
+      movieIds: [],
+      cinemaIds: [],
+      hallIds: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -300,6 +327,11 @@ export default {
         this.manageList = response.rows;
         this.total = response.total;
         this.loading = false;
+        listManage2().then(response =>{
+          this.movieIds = response.data.movieIds;
+          this.cinemaIds = response.data.cinemaIds;
+          this.hallIds = response.data.hallIds;
+        })
       });
     },
     // 取消按钮

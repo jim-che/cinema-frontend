@@ -27,16 +27,6 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['movie:office:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
           type="success"
           plain
           icon="el-icon-edit"
@@ -113,10 +103,9 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="电影编号" prop="movieId">
-          <el-input v-model="form.movieId" placeholder="请输入电影编号" />
-        </el-form-item>
-        <el-form-item label="总票房(万)" prop="boxOffice">
-          <el-input v-model="form.boxOffice" placeholder="请输入总票房(万)" />
+          <el-select v-model="form.movieId" placeholder="请选择电影编号">
+            <el-option v-for="item in movieList" :key="item" :label="item" :value="item"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -129,11 +118,13 @@
 
 <script>
 import { listOffice, getOffice, delOffice, addOffice, updateOffice } from "@/api/movie/office";
+import {listManage2} from "@/api/session/manage";
 
 export default {
   name: "Office",
   data() {
     return {
+      movieList: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -192,6 +183,11 @@ export default {
         this.officeList = response.rows;
         this.total = response.total;
         this.loading = false;
+        listManage2().then(response =>{
+          this.movieList = response.data.movieIds;
+          this.cinemaIds = response.data.cinemaIds;
+          this.hallIds = response.data.hallIds;
+        })
       });
     },
     // 取消按钮

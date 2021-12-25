@@ -9,6 +9,13 @@ export function listManage(query) {
   })
 }
 
+export function listManage2() {
+  return request({
+    url: '/session/manage/list2',
+    method: 'get'
+  })
+}
+
 // 查询场次管理详细
 export function getManage(id) {
   return request({

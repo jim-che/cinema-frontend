@@ -141,7 +141,14 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="场次编号" prop="sessionId">
-          <el-input v-model="form.sessionId" placeholder="请输入场次编号" />
+          <el-select v-model="form.sessionId" placeholder="请选择场次编号">
+            <el-option
+              v-for="item in sessionIds"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="行数" prop="rowNumber">
           <el-input v-model="form.rowNumber" placeholder="请输入行数" />
@@ -160,6 +167,7 @@
 
 <script>
 import { listInfo, getInfo, delInfo, addInfo, updateInfo } from "@/api/session/info";
+import {listSession2} from "@/api/session/session";
 
 export default {
   name: "Info",
@@ -229,6 +237,7 @@ export default {
   },
   created() {
     this.getList();
+
   },
   methods: {
     /** 查询影厅管理列表 */
@@ -238,6 +247,9 @@ export default {
         this.infoList = response.rows;
         this.total = response.total;
         this.loading = false;
+        listSession2().then(response => {
+          this.sessionIds = response.data;
+        })
       });
     },
     // 取消按钮
@@ -248,6 +260,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
+        sessionIds: [],
         id: null,
         sessionId: null,
         cinemaId: null,

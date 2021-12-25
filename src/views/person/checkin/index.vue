@@ -1,6 +1,15 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+      <el-form-item label="员工编号" prop="employeeId">
+        <el-input v-model="queryParams.employeeId" placeholder="请输入员工编号"
+                  clearable
+                  size="small"
+                  @keyup.enter.native="handleQuery"
+        >
+
+        </el-input>
+      </el-form-item>
       <el-form-item label="员工姓名" prop="employeeName">
         <el-input
           v-model="queryParams.employeeName"
@@ -106,7 +115,14 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="员工编号" prop="employeeId">
-          <el-input v-model="form.employeeId" placeholder="请输入员工编号" />
+          <el-select v-model="form.employeeId" placeholder="请选择员工编号">
+            <el-option
+              v-for="item in employeeList"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="出勤次数" prop="attendanceTime">
           <el-input v-model="form.attendanceTime" placeholder="请输入出勤次数" />
@@ -125,11 +141,13 @@
 
 <script>
 import { listCheckin, getCheckin, delCheckin, addCheckin, updateCheckin } from "@/api/person/checkin";
+import {getEmployeeIds} from "@/api/compensation/overtime";
 
 export default {
   name: "Checkin",
   data() {
     return {
+      employeeList: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -190,6 +208,9 @@ export default {
         this.checkinList = response.rows;
         this.total = response.total;
         this.loading = false;
+        getEmployeeIds().then(response => {
+          this.employeeList = response.data;
+        })
       });
     },
     // 取消按钮

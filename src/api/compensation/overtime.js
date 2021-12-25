@@ -9,6 +9,13 @@ export function listOvertime(query) {
   })
 }
 
+export function getEmployeeIds(){
+  return request({
+    url: '/compensation/overtime/list2',
+    method: 'get'
+  })
+}
+
 // 查询加班薪资管理详细
 export function getOvertime(id) {
   return request({

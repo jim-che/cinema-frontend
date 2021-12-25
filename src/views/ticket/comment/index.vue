@@ -109,7 +109,14 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="影片编号" prop="movieId">
-          <el-input v-model="form.movieId" placeholder="请输入影片编号" />
+          <el-select v-model="form.movieId" placeholder="请选择影片编号">
+            <el-option
+              v-for="item in movieList"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="用户评价" prop="comment">
           <el-input v-model="form.comment" type="textarea" placeholder="请输入内容" />
@@ -125,11 +132,13 @@
 
 <script>
 import { listComment, getComment, delComment, addComment, updateComment } from "@/api/ticket/comment";
+import {listManage2} from "@/api/session/manage";
 
 export default {
   name: "Comment",
   data() {
     return {
+      movieList: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -186,6 +195,11 @@ export default {
         this.commentList = response.rows;
         this.total = response.total;
         this.loading = false;
+        listManage2().then(response =>{
+          this.movieList = response.data.movieIds;
+          this.cinemaIds = response.data.cinemaIds;
+          this.hallIds = response.data.hallIds;
+        })
       });
     },
     // 取消按钮

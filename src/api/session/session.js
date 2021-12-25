@@ -9,6 +9,12 @@ export function listSession(query) {
   })
 }
 
+export function listSession2(){
+  return request({
+    url: '/session/session/list2',
+    method: 'get'
+  })
+}
 // 查询维护管理详细
 export function getSession(id) {
   return request({

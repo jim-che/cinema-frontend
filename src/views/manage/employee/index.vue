@@ -60,6 +60,7 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['manage:employee:edit']"
+            disabled
           >修改</el-button>
           <el-button
             size="mini"
@@ -67,6 +68,7 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['manage:employee:remove']"
+            disabled
           >删除</el-button>
         </template>
       </el-table-column>

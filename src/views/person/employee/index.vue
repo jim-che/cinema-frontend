@@ -181,7 +181,14 @@
           <el-input v-model="form.salary" placeholder="请输入薪资" />
         </el-form-item>
         <el-form-item label="影院编号" prop="cinemaId">
-          <el-input v-model="form.cinemaId" placeholder="请输入影院编号" />
+          <el-select v-model="form.cinemaId" placeholder="请选择影院编号">
+            <el-option
+              v-for="cinema in cinemaIds"
+              :key="cinema"
+              :label="cinema"
+              :value="cinema"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="入职时间" prop="hiredate">
           <el-date-picker clearable size="small"
@@ -221,12 +228,14 @@
 
 <script>
 import { listEmployee, getEmployee, delEmployee, addEmployee, updateEmployee } from "@/api/person/employee";
+import {listManage2} from "@/api/session/manage";
 
 export default {
   name: "Employee",
   dicts: ['sys_user_sex', 'employee_status', 'employee_type'],
   data() {
     return {
+      cinemaIds: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -306,6 +315,11 @@ export default {
         this.employeeList = response.rows;
         this.total = response.total;
         this.loading = false;
+        listManage2().then(response =>{
+          this.movieIds = response.data.movieIds;
+          this.cinemaIds = response.data.cinemaIds;
+          this.hallIds = response.data.hallIds;
+        })
       });
     },
     // 取消按钮

@@ -123,7 +123,14 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="员工编号" prop="employeeId">
-          <el-input v-model="form.employeeId" placeholder="请输入员工编号" />
+          <el-select  v-model="form.employeeId" placeholder="请输入员工编号">
+            <el-option
+              v-for="item in employeeList"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="加班日期" prop="overtimeDate">
           <el-date-picker clearable size="small"
@@ -149,12 +156,13 @@
 </template>
 
 <script>
-import { listOvertime, getOvertime, delOvertime, addOvertime, updateOvertime } from "@/api/compensation/overtime";
+import { listOvertime, getOvertime, delOvertime, addOvertime, updateOvertime, getEmployeeIds } from "@/api/compensation/overtime";
 
 export default {
   name: "Overtime",
   data() {
     return {
+      employeeList: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -217,6 +225,9 @@ export default {
         this.overtimeList = response.rows;
         this.total = response.total;
         this.loading = false;
+        getEmployeeIds().then(response => {
+          this.employeeList = response.data;
+        })
       });
     },
     // 取消按钮

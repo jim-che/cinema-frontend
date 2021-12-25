@@ -138,7 +138,14 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="场次编号" prop="sessionId">
-          <el-input v-model="form.sessionId" placeholder="请输入场次编号" />
+          <el-select v-model="form.sessionId" placeholder="请选择场次编号">
+            <el-option
+              v-for="item in sessionList"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -151,11 +158,15 @@
 
 <script>
 import { listDraw, getDraw, delDraw, addDraw, updateDraw } from "@/api/ticket/draw";
+import {listSession2} from "@/api/session/session";
+import {listManage2} from "@/api/session/manage";
 
 export default {
   name: "Draw",
   data() {
     return {
+      movieList: [],
+      sessionList: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -185,7 +196,9 @@ export default {
         sessionId: null,
       },
       // 表单参数
-      form: {},
+      form: {
+        sessionId: null,
+      },
       // 表单校验
       rules: {
       }
@@ -202,6 +215,14 @@ export default {
         this.drawList = response.rows;
         this.total = response.total;
         this.loading = false;
+        listSession2().then(response => {
+          this.sessionList = response.data;
+        })
+        listManage2().then(response =>{
+          this.movieIds = response.data.movieIds;
+          this.cinemaIds = response.data.cinemaIds;
+          this.hallIds = response.data.hallIds;
+        })
       });
     },
     // 取消按钮

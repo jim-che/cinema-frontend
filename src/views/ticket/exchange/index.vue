@@ -149,7 +149,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -162,7 +162,15 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="场次编号" prop="sessionId">
-          <el-input v-model="form.sessionId" placeholder="请输入场次编号" />
+          <el-select v-model="form.sessionId" placeholder="请选择场次编号">
+            <el-option
+              v-for="item in sessionList"
+              :key="item"
+              :label="item"
+              :value="item"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="座位号" prop="seatId">
           <el-input v-model="form.seatId" placeholder="请输入座位号" />
@@ -201,12 +209,14 @@
 
 <script>
 import { listExchange, getExchange, delExchange, addExchange, updateExchange } from "@/api/ticket/exchange";
+import {listSession2} from "@/api/session/session";
 
 export default {
   name: "Exchange",
   dicts: ['sys_yes_no', 'exchange_status'],
   data() {
     return {
+      sessionList: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -284,6 +294,9 @@ export default {
         this.exchangeList = response.rows;
         this.total = response.total;
         this.loading = false;
+        listSession2().then(response => {
+          this.sessionList = response.data;
+        })
       });
     },
     // 取消按钮
